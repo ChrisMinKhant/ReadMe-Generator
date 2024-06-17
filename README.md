@@ -1,2 +1,3 @@
-# ReadMe-Generator
-Go lang command line tool for creating read me file from spring boot rest controller to describe endpoint.
+# megoyougo_framework
+
+Simple go framework copy cat the basic concept of Laravel and MVC pattern.
