@@ -1,5 +1,7 @@
 package handlerprovider
 
+import "github.com/ChrisMinKhant/megoyougo_framework/handler"
+
 type handlerProvider struct {
 }
 
@@ -15,5 +17,5 @@ func NewHandlerProvider() *handlerProvider {
  */
 
 func (handlerProvider *handlerProvider) Register() {
-
+	BindHandler("/generate|POST", handler.NewGenerateReadmeFileHandler().Handle)
 }

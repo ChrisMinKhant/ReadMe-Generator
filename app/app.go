@@ -3,7 +3,6 @@ package app
 import (
 	"net/http"
 
-	"github.com/ChrisMinKhant/megoyougo_framework/database"
 	"github.com/ChrisMinKhant/megoyougo_framework/provider"
 	"github.com/ChrisMinKhant/megoyougo_framework/provider/handlerprovider"
 	"github.com/ChrisMinKhant/megoyougo_framework/util"
@@ -18,13 +17,11 @@ import (
 
 type app struct {
 	handlerprovider provider.Provider
-	database        database.Database
 }
 
 func NewApp() *app {
 	return &app{
 		handlerprovider: handlerprovider.NewHandlerProvider(),
-		database:        database.NewPostgres(),
 	}
 }
 
@@ -37,12 +34,6 @@ func (app *app) Start() {
 	 */
 
 	app.handlerprovider.Register()
-
-	/*
-	 * All entities of the database are booted up here.
-	 */
-
-	app.database.Initialize()
 
 	logrus.Infof("The server is started and serving at port ::: %v\n", servedPort)
 	/*
