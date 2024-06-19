@@ -6,7 +6,7 @@ import (
 
 	requestDto "github.com/ChrisMinKhant/megoyougo_framework/dto/request"
 	responseDto "github.com/ChrisMinKhant/megoyougo_framework/dto/response"
-	"github.com/sirupsen/logrus"
+	"github.com/ChrisMinKhant/megoyougo_framework/service/generatereadmefileservice"
 )
 
 type generateReadmeFileHandler struct {
@@ -27,5 +27,7 @@ func (generateReadmeFileHandler *generateReadmeFileHandler) Handle(w http.Respon
 		panic("Error occurred at reading request body ::: " + err.Error())
 	}
 
-	logrus.Infof("Fetched generate read me file request ::: %v\n", *generateReadmeFileHandler.request)
+	service := generatereadmefileservice.New()
+
+	service.GenerateReadmeFile(generateReadmeFileHandler.request)
 }
