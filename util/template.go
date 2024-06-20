@@ -16,10 +16,15 @@ var Endpoint string = "#### Endpoint [EndpointNumber]\n" +
 	"````\n"
 
 var REQUEST_PARAM = "#### Request Parameters\n" +
-	"##### [field] [type]\n" +
+	"##### [FIELD] [TYPE]\n" +
 	"##### Validations\n" +
 	"| Name | Description |\n" +
 	"| :---: | :---: |\n" +
-	"[VALIDATION]" +
+	"[VALIDATIONS]" +
 	"##### Description\n" +
 	"[REQUEST_PARAM_DESCRIPTION]\n"
+
+var RESPONSE_PARAM = "#### Response Parameters\n" +
+	"##### [FIELD] [TYPE]\n" +
+	"##### Description\n" +
+	"[RESPONSE_PARAM_DESCRIPTION]"

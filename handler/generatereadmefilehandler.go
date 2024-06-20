@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	requestDto "github.com/ChrisMinKhant/megoyougo_framework/dto/request"
 	responseDto "github.com/ChrisMinKhant/megoyougo_framework/dto/response"
@@ -10,8 +11,7 @@ import (
 )
 
 type generateReadmeFileHandler struct {
-	request  *requestDto.GenerateReadmeFileRequest
-	response *responseDto.GenereteReadmeFileResponse
+	request *requestDto.GenerateReadmeFileRequest
 }
 
 func NewGenerateReadmeFileHandler() *generateReadmeFileHandler {
@@ -29,5 +29,23 @@ func (generateReadmeFileHandler *generateReadmeFileHandler) Handle(w http.Respon
 
 	service := generatereadmefileservice.New()
 
-	service.GenerateReadmeFile(generateReadmeFileHandler.request)
+	w.Header().Set("Content-Type", "application/json")
+
+	if service.GenerateReadmeFile(generateReadmeFileHandler.request) {
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(&responseDto.GenereteReadmeFileResponse{
+			Status:    "200",
+			Message:   "Successful",
+			Timestamp: time.Now(),
+		})
+
+		return
+	}
+
+	w.WriteHeader(http.StatusInternalServerError)
+	json.NewEncoder(w).Encode(&responseDto.GenereteReadmeFileResponse{
+		Status:    "500",
+		Message:   "Fail",
+		Timestamp: time.Now(),
+	})
 }
