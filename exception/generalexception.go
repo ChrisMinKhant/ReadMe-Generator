@@ -23,7 +23,7 @@ func (generalException *generalException) RecoverPanic() {
 	if recoveryStatus := recover(); recoveryStatus != nil {
 
 		logrus.Infof("System has been recovered from exception ::: [ %v ]\n", recoveryStatus)
-		return
 
+		return
 	}
 }

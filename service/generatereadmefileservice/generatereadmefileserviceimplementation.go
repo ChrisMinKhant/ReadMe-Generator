@@ -5,29 +5,39 @@ import (
 	"strings"
 
 	dto "github.com/ChrisMinKhant/megoyougo_framework/dto/request"
+	"github.com/ChrisMinKhant/megoyougo_framework/exception"
 	"github.com/ChrisMinKhant/megoyougo_framework/util"
 	"github.com/sirupsen/logrus"
 )
 
 type generateReadmeFileServiceImplementation struct {
+	exceptionHandler exception.Exception
 }
 
 func New() *generateReadmeFileServiceImplementation {
-	return &generateReadmeFileServiceImplementation{}
+	return &generateReadmeFileServiceImplementation{
+		exceptionHandler: exception.GetGeneralExceptionInstance(),
+	}
 }
 
 func (generateReadmeFileServiceImplementation *generateReadmeFileServiceImplementation) GenerateReadmeFile(serviceInfo *dto.GenerateReadmeFileRequest) bool {
-	logrus.Infof("Fetched service info ::: %v\n", serviceInfo)
+	defer generateReadmeFileServiceImplementation.exceptionHandler.RecoverPanic()
 
-	createdFile, error := os.Create("/home/kaungminkhant/README.md")
+	logrus.Info("Generating readme file...")
+
+	createdFile, error := os.Create(serviceInfo.GenerationDirectory + "/README.md")
 
 	if error != nil {
-		panic("Error occurred at creating file ::: " + error.Error())
+		logrus.Panicf("Error occurred at creating file ::: %v\n", error.Error())
 	}
 
 	defer createdFile.Close()
 
-	createdFile.Write([]byte(generateReadmeFileServiceImplementation.buildReadMe(serviceInfo)))
+	_, error = createdFile.Write([]byte(generateReadmeFileServiceImplementation.buildReadMe(serviceInfo)))
+
+	if error != nil {
+		logrus.Panicf("Error occurred at writing to file ::: %v\n", error.Error())
+	}
 
 	return true
 }

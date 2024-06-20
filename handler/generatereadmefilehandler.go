@@ -7,24 +7,30 @@ import (
 
 	requestDto "github.com/ChrisMinKhant/megoyougo_framework/dto/request"
 	responseDto "github.com/ChrisMinKhant/megoyougo_framework/dto/response"
+	"github.com/ChrisMinKhant/megoyougo_framework/exception"
 	"github.com/ChrisMinKhant/megoyougo_framework/service/generatereadmefileservice"
+	"github.com/sirupsen/logrus"
 )
 
 type generateReadmeFileHandler struct {
-	request *requestDto.GenerateReadmeFileRequest
+	request          *requestDto.GenerateReadmeFileRequest
+	exceptionHandler exception.Exception
 }
 
 func NewGenerateReadmeFileHandler() *generateReadmeFileHandler {
 	return &generateReadmeFileHandler{
-		request: &requestDto.GenerateReadmeFileRequest{},
+		request:          &requestDto.GenerateReadmeFileRequest{},
+		exceptionHandler: exception.GetGeneralExceptionInstance(),
 	}
 }
 
 func (generateReadmeFileHandler *generateReadmeFileHandler) Handle(w http.ResponseWriter, r *http.Request) {
+	defer generateReadmeFileHandler.exceptionHandler.RecoverPanic()
+
 	err := json.NewDecoder(r.Body).Decode(generateReadmeFileHandler.request)
 
 	if err != nil {
-		panic("Error occurred at reading request body ::: " + err.Error())
+		logrus.Panicf("Error occurred at reading request body ::: %v\n", err.Error())
 	}
 
 	service := generatereadmefileservice.New()
