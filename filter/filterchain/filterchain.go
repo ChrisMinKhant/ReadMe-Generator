@@ -1,14 +1,11 @@
 package filterchain
 
 import (
-	"encoding/json"
 	"net/http"
-	"time"
 
 	"github.com/ChrisMinKhant/megoyougo_framework/exception"
-	"github.com/ChrisMinKhant/megoyougo_framework/filter"
-	"github.com/ChrisMinKhant/megoyougo_framework/util"
-	"github.com/sirupsen/logrus"
+	"github.com/ChrisMinKhant/megoyougo_framework/filter/headerfilter"
+	"github.com/ChrisMinKhant/megoyougo_framework/filter/tokenfilter"
 )
 
 type FilterChain struct {
@@ -37,25 +34,10 @@ func (filterChain *FilterChain) Set() {
 	 */
 
 	// filterChain.filterList.Add(httpsfilter.New())
-	// filterChain.filterList.Add(headerfilter.New())
-	// filterChain.filterList.Add(authfilter.New())
+	filterChain.filterList.Add(headerfilter.New())
+	filterChain.filterList.Add(tokenfilter.New())
 }
 
 func (filterChain *FilterChain) Invoke(response http.ResponseWriter, request *http.Request) bool {
-	defer filterChain.exception.RecoverPanic()
-
-	filterChain.filterList.Invoke(response, request)
-
-	if fetchedSignal := <-filter.ErrorSigal; fetchedSignal != "" {
-
-		response.Header().Set("Content-Type", "application/json")
-		response.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(response).Encode(util.NewErrorResponse().SetStatus("Filteration Failed").SetMessage(fetchedSignal).SetPath(request.RequestURI).SetTimestamp(time.Now().String()))
-
-		logrus.Panicf("Filteration failed with error ::: [ %v ]\n", fetchedSignal)
-
-		return false
-	}
-
-	return true
+	return filterChain.filterList.Invoke(response, request)
 }
