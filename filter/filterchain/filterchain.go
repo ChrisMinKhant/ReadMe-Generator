@@ -5,7 +5,7 @@ import (
 
 	"github.com/ChrisMinKhant/megoyougo_framework/exception"
 	"github.com/ChrisMinKhant/megoyougo_framework/filter/headerfilter"
-	"github.com/ChrisMinKhant/megoyougo_framework/filter/tokenfilter"
+	"github.com/ChrisMinKhant/megoyougo_framework/filter/whitelistfilter"
 )
 
 type FilterChain struct {
@@ -35,7 +35,7 @@ func (filterChain *FilterChain) Set() {
 
 	// filterChain.filterList.Add(httpsfilter.New())
 	filterChain.filterList.Add(headerfilter.New())
-	filterChain.filterList.Add(tokenfilter.New())
+	filterChain.filterList.Add(whitelistfilter.New())
 }
 
 func (filterChain *FilterChain) Invoke(response http.ResponseWriter, request *http.Request) bool {
