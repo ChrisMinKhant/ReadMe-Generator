@@ -9,6 +9,7 @@ import (
 	"github.com/ChrisMinKhant/megoyougo_framework/filter/filterchain"
 	"github.com/ChrisMinKhant/megoyougo_framework/provider/handlerprovider"
 	"github.com/ChrisMinKhant/megoyougo_framework/util"
+	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -69,7 +70,12 @@ func (gateWay *gateWay) dispatchRequest(response http.ResponseWriter, request *h
 
 		if request.RequestURI == path && request.Method == method {
 
+			cors.New(cors.Options{
+				AllowedOrigins: []string{"*"},
+			}).Handler()
+
 			handler(response, request)
+
 			return
 		}
 

@@ -1,2 +1,2 @@
 run:
-	go run /mnt/edisk/Yoma\ Projects/readme_generator/cmd/.
+	go run /home/kaungminkhant/readme_generator/cmd/. 
