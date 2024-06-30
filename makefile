@@ -1,2 +1,2 @@
 run:
-	go run /home/kaungminkhant/readme_generator/cmd/. 
+	go run  /mnt/Yoma\ Projects/readme_generator/cmd/.

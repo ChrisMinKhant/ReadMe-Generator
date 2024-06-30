@@ -80,6 +80,9 @@ func (filterList *filterList) Invoke(response http.ResponseWriter, request *http
 		// with error code.
 		if fetchedSignal := <-filter.ErrorSigal; fetchedSignal != "" {
 
+			response.Header().Set("Access-Control-Allow-Origin", "*")
+			response.Header().Set("Access-Control-Allow-Methods", "*")
+			response.Header().Set("Access-Control-Allow-Headers", "*")
 			response.Header().Set("Content-Type", "application/json")
 			response.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(response).Encode(util.NewErrorResponse().SetStatus("Filteration Failed").SetMessage(fetchedSignal).SetPath(request.RequestURI).SetTimestamp(time.Now().String()))

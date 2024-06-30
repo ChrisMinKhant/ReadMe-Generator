@@ -27,6 +27,8 @@ func NewGenerateReadmeFileHandler() *generateReadmeFileHandler {
 func (generateReadmeFileHandler *generateReadmeFileHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	defer generateReadmeFileHandler.exceptionHandler.RecoverPanic()
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	err := json.NewDecoder(r.Body).Decode(generateReadmeFileHandler.request)
 
 	if err != nil {

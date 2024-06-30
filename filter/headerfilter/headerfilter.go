@@ -16,7 +16,7 @@ func New() *headerFilter {
 }
 
 func (headerFilter *headerFilter) Do(response http.ResponseWriter, request *http.Request) {
-	logrus.Infof("Fetched Headers ::: %v\n", request.Header.Get("Content-Type"))
+	logrus.Infof("Fetched Headers ::: %v\n", request.RemoteAddr)
 	contentType := request.Header.Get("Content-Type")
 
 	if !strings.Contains(contentType, "application/json") {

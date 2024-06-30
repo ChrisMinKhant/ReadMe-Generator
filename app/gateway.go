@@ -9,7 +9,6 @@ import (
 	"github.com/ChrisMinKhant/megoyougo_framework/filter/filterchain"
 	"github.com/ChrisMinKhant/megoyougo_framework/provider/handlerprovider"
 	"github.com/ChrisMinKhant/megoyougo_framework/util"
-	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 )
 
@@ -38,6 +37,8 @@ func (gateWay *gateWay) ServeHTTP(response http.ResponseWriter, request *http.Re
 
 	logrus.Info("The request reaches to the gateway.")
 
+	gateWay.handlePreflightRequest(response, request)
+
 	/*
 	 * The request will be filtered by
 	 * the defined filterchain in defined
@@ -62,6 +63,8 @@ func (gateWay *gateWay) dispatchRequest(response http.ResponseWriter, request *h
 
 	logrus.Infof("Dispatching request for [ Path ::: %v , Method ::: %v ]", request.RequestURI, request.Method)
 
+	logrus.Infof("Fetched origin of the request ::: %v\n", request.Body)
+
 	handlerMap := handlerprovider.GetHandler()
 
 	for endpoint, handler := range handlerMap {
@@ -69,10 +72,6 @@ func (gateWay *gateWay) dispatchRequest(response http.ResponseWriter, request *h
 		path, method := gateWay.fetchPathAndMethod(endpoint)
 
 		if request.RequestURI == path && request.Method == method {
-
-			cors.New(cors.Options{
-				AllowedOrigins: []string{"*"},
-			}).Handler()
 
 			handler(response, request)
 
@@ -86,6 +85,20 @@ func (gateWay *gateWay) dispatchRequest(response http.ResponseWriter, request *h
 	response.Header().Set("Content-Type", "application/json")
 	response.WriteHeader(http.StatusNotFound)
 	json.NewEncoder(response).Encode(util.NewErrorResponse().SetStatus("NOT FOUND").SetMessage("Path not found.").SetPath(request.RequestURI).SetTimestamp(time.Now().String()))
+}
+
+func (gateWay *gateWay) handlePreflightRequest(response http.ResponseWriter, request *http.Request) {
+	if request.Method == "OPTIONS" {
+
+		response.Header().Set("Access-Control-Allow-Origin", "*")
+		response.Header().Set("Access-Control-Allow-Methods", "*")
+		response.Header().Set("Access-Control-Allow-Headers", "*")
+		response.Header().Set("Content-Type", "application/json")
+		response.WriteHeader(http.StatusOK)
+		json.NewEncoder(response).Encode("")
+		return
+
+	}
 }
 
 func (gateWay *gateWay) fetchPathAndMethod(endpoint string) (string, string) {

@@ -39,6 +39,5 @@ func (app *app) Start() {
 	/*
 	 * Then, the application is serve at defined port.
 	 */
-
 	http.ListenAndServe(":"+servedPort, NewGateWay())
 }
